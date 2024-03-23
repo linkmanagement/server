@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
     const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,countryCode,city,zip`);
     const data = await response.json();
-    res.status(200).json({ ip, data: data });
+    res.status(200).json({ ip, ...data });
   }
 
 }
