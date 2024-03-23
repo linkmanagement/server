@@ -20,7 +20,7 @@ export default function Home() {
         <Sheet>
 
           <SheetTrigger asChild>
-            <Button variant="outline">Open</Button>
+            <Button variant="secondary">Open</Button>
           </SheetTrigger>
           <SheetContent className="text-foreground">
             <SheetHeader>
