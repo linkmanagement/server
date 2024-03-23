@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   if (!ip && forwardedFor) {
     ip = forwardedFor?.split(",").at(0) ?? null;
-    res.status(200).json({ ip: ip });
+    res.status(200).json({ ip: ip, error: "No IP address detected!"});
   }
   else {
     // http://ip-api.com/json/103.239.252.50
