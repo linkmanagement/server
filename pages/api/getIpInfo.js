@@ -9,14 +9,17 @@ export default async function handler(req, res) {
 
   if (!ip && forwardedFor) {
     ip = forwardedFor?.split(",").at(0) ?? null;
-    res.status(200).json({ ip: ip, error: "No IP address detected!"});
+    res.status(200).json({ ip: ip, error: "No IP address detected!" });
   }
   else {
     // http://ip-api.com/json/103.239.252.50
 
     const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,countryCode,city`);
     const data = await response.json();
-    res.status(200).json({ ip, ...data });
+
+    let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
+    let vpnData = await isVpn.json();
+    res.status(200).json({ ip, ...data, vpn: vpnData });
   }
 
 }
