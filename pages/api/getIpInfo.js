@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   if (!ip && forwardedFor) {
     ip = forwardedFor?.split(",").at(0) ?? null;
-    res.status(200).json({ ip: ip, error: "No IP address detected!" });
+    res.status(200).json({ ip: null, error: "No IP address detected!" });
   }
   else {
     // http://ip-api.com/json/103.239.252.50
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
     let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
     let vpnData = await isVpn.json();
-    res.status(200).json({ ip, ...data, vpn: vpnData });
+    res.status(200).json({ ip, ...data, vpn: vpnData.is_vpn });
   }
 
 }
