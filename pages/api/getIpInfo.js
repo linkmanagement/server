@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
     let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
     let vpnData = await isVpn.json();
-    res.status(200).json({ ip, ...data, vpn: vpnData.is_vpn });
+    res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
   }
 
 }
