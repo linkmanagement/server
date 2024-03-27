@@ -11,6 +11,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 import { useEffect, useRef, useState } from "react"
 
 
@@ -37,14 +47,14 @@ export default function Home() {
                 {`You can scroll through all the links (${links?.length || 0})  you've created and edit or view their analytics.`}
               </SheetDescription>
             </SheetHeader>
-            <div className="flex-1 p-2 overflow-y-scroll no-scrollbar">
+            <div className="flex-1 overflow-y-scroll no-scrollbar">
 
               {
                 links.map((_, i) => (
-                  <div key={i} className="bg-card p-4 rounded-md mb-4 space-y-2">
+                  <div key={i} className="bg-card p-4 rounded-md mb-4 space-y-4 border border-border">
                     <p className="text-muted-foreground text-sm"> <span className="text-foreground font-semibold text-lg">Link {i + 1}</span>  - Created {2} days ago </p>
 
-                    <div>
+                    <div className="flex flex-col space-y-2">
                       <Label>Link URL</Label>
                       <Input
                         className="w-full"
@@ -52,7 +62,7 @@ export default function Home() {
                         readOnly
                       />
                     </div>
-                    <div>
+                    <div className="flex flex-col space-y-2">
                       <Label>Tracking URL</Label>
                       <Input
                         className="w-full"
@@ -69,14 +79,58 @@ export default function Home() {
               }
             </div>
 
-            <SheetFooter>
+            <SheetFooter className="border-t border-border mt-4 pt-4">
               <SheetDescription className="text-muted-foreground">
                 2021 © Link Management Server
               </SheetDescription>
             </SheetFooter>
           </SheetContent>
+
+
+
+
         </Sheet>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="secondary"> Add Link </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] text-foreground">
+            <DialogHeader>
+              <DialogTitle>Add Lander Link</DialogTitle>
+              <DialogDescription>
+                Add url and tracking url to create a new link. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">
+                  Url
+                </Label>
+                <Input value="Pedro Duarte" className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">
+                  Tracking Url
+                </Label>
+                <Input value="@peduarte" className="col-span-3" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Add</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+
+        <div>
+          aa
+        </div>
+
+
+
       </div>
+
 
     </div>
   );
