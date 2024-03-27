@@ -90,7 +90,7 @@ export function MonthPicker(props) {
             height='24'
             viewBox='0 0 24 24'
             fill='none'
-            stroke={props.textColor ? props.textColor : '#000'}
+            stroke={props.textColor ? props.textColor : '#fff'}
             strokeWidth='2'
             strokeLinecap='round'
             strokeLinejoin='round'
@@ -113,7 +113,7 @@ export function MonthPicker(props) {
             height='24'
             viewBox='0 0 24 24'
             fill='none'
-            stroke={props.textColor ? props.textColor : '#000'}
+            stroke={props.textColor ? props.textColor : '#fff'}
             strokeWidth='2'
             strokeLinecap='round'
             strokeLinejoin='round'

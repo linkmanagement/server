@@ -169,10 +169,9 @@ export default function Home() {
 
           </TabsContent>
 
-          <TabsContent value="analytics" className="bg-blue-400 flex-1">
+          <TabsContent value="analytics" className="flex-1">
 
             <div className="">
-              See Analytics Table
               <div className="flex flex-col space-y-2 position-relative w-[200px]">
                 <MonthInput
                   selected={selectedMonthData}
@@ -189,6 +188,14 @@ export default function Home() {
                 ) : null}
               </div>
             </div>
+
+            {
+              !isPickerOpen &&
+              <div>
+                a
+              </div>
+            }
+
           </TabsContent>
 
           <TabsContent value="map" className="bg-green-400 flex-1">

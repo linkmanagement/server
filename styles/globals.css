@@ -36,18 +36,18 @@ body,
   --input: 240 3.7% 15.9%;
   --ring: 346.8 77.2% 49.8%;
 
-  --month-active-bg-color: #4ea3983e;
-  --month-hover-bg-color: #f4f4f4;
-  --text-color: #000;
+  --month-active-bg-color: #0C0A09;
+  --month-hover-bg-color: #0C0A0980;
+  --text-color: white;
   --month-border-radius: 2px;
-  --picker-bg-color: #fff;
+  --picker-bg-color: #262626;
   --picker-padding: 10px;
   --year-display-margin-top: 0;
   --year-display-margin-bottom: 4px;
   --month-select-padding: 6px;
-  --input-bg-color: #fff;
-  --input-hover-bg-color: #fff;
-  --input-text-color: #000;
+  --input-bg-color: #262626;
+  --input-hover-bg-color: #262626;
+  --input-text-color: white;
   --month-input-font-size: 14px;
   --month-input-width: 200px;
   --month-input-padding: 8px;
