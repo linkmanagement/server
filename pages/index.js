@@ -2,6 +2,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { toast, useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
+
+
+
 import {
   Sheet,
   SheetClose,
@@ -41,11 +46,11 @@ export default function Home() {
           <Sheet className="flex">
 
             <SheetTrigger asChild>
-              <Button variant="secondary" className="mr-2 w-[max-content]">View All Links</Button>
+              <Button variant="secondary" className="mr-2 w-[max-content]">View Links</Button>
             </SheetTrigger>
             <SheetContent className="text-foreground flex flex-col w-4/4 md:w-3/4">
               <SheetHeader>
-                <SheetTitle>All Links</SheetTitle>
+                <SheetTitle>List of Links</SheetTitle>
                 <SheetDescription className="text-muted-foreground">
                   {`You can scroll through all the links (${links?.length || 0})  you've created and edit or view their analytics.`}
                 </SheetDescription>
@@ -74,7 +79,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="flex flex-wrap">
-                        <Button variant="secondary">View</Button>
+                        <Button variant="secondary">Detailed View</Button>
                         <Button variant="destructive">Delete</Button>
                       </div>
                     </div>
@@ -120,7 +125,14 @@ export default function Home() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Add</Button>
+                <Button type="submit"
+                  onClick={() => {
+                    toast({
+                      title: "Scheduled: Catch up",
+                      description: "Friday, February 10, 2023 at 5:57 PM",
+                    })
+                  }}
+                >Add</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -169,6 +181,8 @@ export default function Home() {
 
       </div>
 
+
+      <Toaster />
 
     </div>
   );
