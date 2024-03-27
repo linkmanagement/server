@@ -28,12 +28,19 @@ import {
 } from "@/components/ui/dialog"
 
 import { useEffect, useRef, useState } from "react"
+import { MonthInput } from "@/components/MonthInput/MonthInput"
+import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
 
 
 export default function Home() {
 
 
   const [links, setLinks] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  const [selectedMonthData, setSelectedMonthData] = useState({
+    month: 9,
+    year: 2023,
+  });
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 
 
@@ -166,6 +173,21 @@ export default function Home() {
 
             <div className="">
               See Analytics Table
+              <div className="flex flex-col space-y-2 position-relative w-[200px]">
+                <MonthInput
+                  selected={selectedMonthData}
+                  setShowMonthPicker={setIsPickerOpen}
+                  showMonthPicker={isPickerOpen}
+                />
+                {isPickerOpen ? (
+                  <MonthPicker
+                    size="small"
+                    setIsOpen={setIsPickerOpen}
+                    selected={selectedMonthData}
+                    onChange={setSelectedMonthData}
+                  />
+                ) : null}
+              </div>
             </div>
           </TabsContent>
 
