@@ -38,9 +38,9 @@ export default function Home() {
         <Sheet className="flex">
 
           <SheetTrigger asChild>
-            <Button variant="secondary">View All Links</Button>
+            <Button variant="secondary" className="mr-2 mb-2">View All Links</Button>
           </SheetTrigger>
-          <SheetContent className="text-foreground flex flex-col">
+          <SheetContent className="text-foreground flex flex-col w-4/4 md:w-3/4">
             <SheetHeader>
               <SheetTitle>All Links</SheetTitle>
               <SheetDescription className="text-muted-foreground">
@@ -70,7 +70,7 @@ export default function Home() {
                         readOnly
                       />
                     </div>
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex flex-wrap">
                       <Button variant="secondary">View</Button>
                       <Button variant="destructive">Delete</Button>
                     </div>
@@ -95,9 +95,9 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button variant="secondary"> Add Link </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] text-foreground">
+          <DialogContent className="max-w-[90%] sm:max-w-[425px] text-foreground">
             <DialogHeader>
-              <DialogTitle>Add Lander Link</DialogTitle>
+              <DialogTitle>Add Link</DialogTitle>
               <DialogDescription>
                 Add url and tracking url to create a new link. Click save when you're done.
               </DialogDescription>
