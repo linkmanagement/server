@@ -12,7 +12,7 @@ async function addLink(linkUrl, linkTrackingUrl) {
     if (linkExists) {
         return false;
     }
-    await addDoc(linksCollection, { url: linkUrl, tracking: linkTrackingUrl, analytics: [], timestamp });
+    await addDoc(linksCollection, { url: linkUrl, tracking: linkTrackingUrl, timestamp });
     return true;
 }
 
@@ -58,12 +58,8 @@ function timeDifferenceInText(timestamp) {
 }
 
 async function addAnalytics(linkUrl, ip, country, countryCode) {
-    const linksCollection = collection(database, 'links');
-    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
-    const doc = querySnapshot.docs[0];
-    let link = doc.data();
-    link.analytics.push({ ip, country, countryCode, timestamp: Date.now() });
-    await updateDoc(doc.ref, link);
+    const analyticsCollection = collection(database, 'analytics');
+    await addDoc(analyticsCollection, { url: linkUrl, ip, country, countryCode, timestamp: Date.now() });
 }
 
 async function getAnalytics(linkUrl) {
@@ -76,7 +72,7 @@ async function getAnalytics(linkUrl) {
 
 async function addIpToVpnList(ip) {
     const vpnCollection = collection(database, 'vpn');
-    await addDoc(vpnCollection, { ip: ip});
+    await addDoc(vpnCollection, { ip: ip });
 }
 
 async function isIpInVpnList(ip) {
