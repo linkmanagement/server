@@ -50,7 +50,7 @@
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
   background: var(--picker-bg-color);
   width: max-content;
-  border: 1px solid #cc1b42;
+  border: 1px solid #10b981;
 }
 
 .button {

@@ -39,13 +39,21 @@ import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
 import { addLink, deleteLink, getLinks, timeDifferenceInText, updateLinkTrackingUrl } from "@/backend/functions"
 import { AnalyticsBarChart } from "@/components/Chart/BarChart"
+import { COUNTRIES } from "@/components/CountrySelector/countries"
+import CountrySelector from "@/components/CountrySelector/CountrySelector"
 
 
 
 export default function Home() {
 
 
-  const [links, setLinks] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  const [isOpen, setIsOpen] = useState(false);
+  // Default this to a country's code to preselect it
+  const [country, setCountry] = useState('world');
+
+
+
+  const [links, setLinks] = useState([]);
   const [selectedMonthData, setSelectedMonthData] = useState({
     month: 9,
     year: 2023,
@@ -64,7 +72,7 @@ export default function Home() {
   const [selectedLink, setSelectedLink] = useState(null);
 
 
-  
+
   useEffect(() => {
 
     async function fetchLinks() {
@@ -327,8 +335,8 @@ export default function Home() {
 
             <TabsContent value="analytics" className="flex-1">
 
-              <div className="">
-                <div className="flex flex-col space-y-2 position-relative w-[200px]">
+              <div className="flex flex-col md:flex-row mb-2">
+                <div className="flex flex-col position-relative w-[200px] justify-center">
                   <MonthInput
                     selected={selectedMonthData}
                     setShowMonthPicker={setIsPickerOpen}
@@ -343,11 +351,23 @@ export default function Home() {
                     />
                   ) : null}
                 </div>
+
+
+                {
+                  !isPickerOpen &&
+                  <CountrySelector
+                    id={'countries'}
+                    open={isOpen}
+                    onToggle={() => setIsOpen(!isOpen)}
+                    onChange={val => setCountry(val)}
+                    selectedValue={COUNTRIES.find(option => option.value === country)}
+                  />
+                }
               </div>
 
               {
                 !isPickerOpen &&
-                <div className="w-full h-[90%] justify-left items-center flex">
+                <div className="w-full mt-auto h-[80%] justify-left items-center flex">
                   <AnalyticsBarChart />
                 </div>
               }
