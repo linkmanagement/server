@@ -103,7 +103,7 @@ export default function Home() {
   }
 
   async function handleUpdateLink() {
-    await updateLinkTrackingUrl(editInputLink, editInputTrackingLink);
+    await updateLinkTrackingUrl(editInputLink, removeHttpOrHttpsAndEndSlash(editInputTrackingLink));
     toast({
       title: "Link updated",
       description: `Link ${editInputLink} updated successfully`,
