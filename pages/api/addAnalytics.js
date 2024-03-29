@@ -3,7 +3,7 @@ export default function handler(req, res) {
   if(req.method === 'POST') {
     // Process a POST request
     let data = req.body;
-    res.status(200).json({ message: 'Received data', data });
+    res.status(200).json({ message: 'Received data', a: data.hey });
   }
   else {
     // Handle any other HTTP method
