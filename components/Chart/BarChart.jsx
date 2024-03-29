@@ -2,46 +2,49 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
-    { name: 1, pv: 2890 },
-    { name: 2, pv: 3200 },
-    { name: 3, pv: 1800 },
-    { name: 4, pv: 2100 },
-    { name: 5, pv: 4000 },
-    { name: 6, pv: 2500 },
-    { name: 7, pv: 1600 },
-    { name: 8, pv: 1800 },
-    { name: 9, pv: 2700 },
-    { name: 10, pv: 3900 },
-    { name: 11, pv: 3200 },
-    { name: 12, pv: 2400 },
-    { name: 13, pv: 1800 },
-    { name: 14, pv: 2200 },
-    { name: 15, pv: 3500 },
-    { name: 16, pv: 4200 },
-    { name: 17, pv: 5200 },
-    { name: 18, pv: 3900 },
-    { name: 19, pv: 4700 },
-    { name: 20, pv: 5600 },
-    { name: 21, pv: 4500 },
-    { name: 22, pv: 3600 },
-    { name: 23, pv: 3900 },
-    { name: 24, pv: 4800 },
-    { name: 25, pv: 3900 },
-    { name: 26, pv: 2800 },
-    { name: 27, pv: 2200 },
-    { name: 28, pv: 1600 },
-    { name: 29, pv: 2100 },
-    { name: 30, pv: 3600 },
-    { name: 31, pv: 3900 }
+    { name: 1, clicks: 2890 },
+    { name: 2, clicks: 3200 },
+    { name: 3, clicks: 1800 },
+    { name: 4, clicks: 2100 },
+    { name: 5, clicks: 4000 },
+    { name: 6, clicks: 2500 },
+    { name: 7, clicks: 1600 },
+    { name: 8, clicks: 1800 },
+    { name: 9, clicks: 2700 },
+    { name: 10, clicks: 3900 },
+    { name: 11, clicks: 3200 },
+    { name: 12, clicks: 2400 },
+    { name: 13, clicks: 1800 },
+    { name: 14, clicks: 2200 },
+    { name: 15, clicks: 3500 },
+    { name: 16, clicks: 4200 },
+    { name: 17, clicks: 5200 },
+    { name: 18, clicks: 3900 },
+    { name: 19, clicks: 4700 },
+    { name: 20, clicks: 5600 },
+    { name: 21, clicks: 4500 },
+    { name: 22, clicks: 3600 },
+    { name: 23, clicks: 3900 },
+    { name: 24, clicks: 4800 },
+    { name: 25, clicks: 3900 },
+    { name: 26, clicks: 2800 },
+    { name: 27, clicks: 2200 },
+    { name: 28, clicks: 1600 },
+    { name: 29, clicks: 2100 },
+    { name: 30, clicks: 3600 },
+    { name: 31, clicks: 39000 }
 ];
 
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="flex flex-col max-w-[200px] break-words bg-blue-300">
-                <p className="text-blue-900">{`${label} : ${JSON.stringify(payload)}`}</p>
-                <p className="desc">Anything you want can be displayed here.</p>
+            <div className="flex flex-col max-w-[200px] break-words bg-card p-4 border border-[#10b981] rounded-md">
+                <p className="text-muted-foreground">{`${label} march`}</p>
+                <p>
+                    <span className="text-muted-foreground">Clicks: </span>
+                    <span className="text-[#10b981]">{payload[0].value}</span>
+                </p>
             </div>
         );
     }
@@ -72,7 +75,7 @@ export function AnalyticsBarChart() {
                     <YAxis />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
-                    <Bar dataKey="pv" barSize={20} fill="#8884d8" />
+                    <Bar dataKey="clicks" barSize={20} fill="rgb(16 185 129)" />
                 </BarChart>
             </ResponsiveContainer>
         </div>
