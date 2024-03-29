@@ -273,7 +273,7 @@ export default function Home() {
         {
           selectedLink &&
           <Tabs defaultValue="analytics" className="w-full mt-2 flex flex-col flex-1">
-            <TabsList className="w-[fit-content] m-auto mb-2">
+            <TabsList className="w-[fit-content] md:m-auto mb-2">
               <TabsTrigger value="analytics">View Analytics</TabsTrigger>
               <TabsTrigger value="edit">Edit Link</TabsTrigger>
               <TabsTrigger value="map">Map Visualization </TabsTrigger>
