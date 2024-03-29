@@ -57,10 +57,29 @@ function timeDifferenceInText(timestamp) {
     return `${minutes} minutes ago`;
 }
 
+async function addAnalytics(linkUrl, ip, country, countryCode) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    let link = doc.data();
+    link.analytics.push({ ip, country, countryCode, timestamp: Date.now() });
+    await updateDoc(doc.ref, link);
+}
+
+async function getAnalytics(linkUrl) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    let link = doc.data();
+    return link.analytics;
+}
+
 export {
     addLink,
     getLinks,
     timeDifferenceInText,
     deleteLink,
-    updateLinkTrackingUrl
+    updateLinkTrackingUrl,
+    addAnalytics,
+    getAnalytics
 }

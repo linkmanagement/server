@@ -24,18 +24,25 @@ export default async function handler(req, res) {
     // http://ip-api.com/json/
     try {
       const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,countryCode,city`);
-      let data = await response.json();
-
-      let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
-      if (isVpn.ok) {
-        let vpnData = await isVpn.json();
-        res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
+      if (!response.ok) {
+        res.status(500).json({ ip, country: null, countryCode: null, city: null, is_vpn: false, error: "geo" });
+        return;
       }
       else {
-        res.status(500).json({ ip, ...data, error: "Failed to get VPN data!" });
+        let data = await response.json();
+        let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
+        if (isVpn.ok) {
+          let vpnData = await isVpn.json();
+          res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
+        }
+        else {
+          res.status(500).json({ ip, ...data, is_vpn: false, error: "vpn" });
+        }
       }
+
+
     } catch (error) {
-      res.status(500).json({ ip, error: "Failed to get geolocation data!" });
+      res.status(500).json({ ip, country: null, countryCode: null, city: null, error: "geo" });
     }
   }
 }
