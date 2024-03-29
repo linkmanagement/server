@@ -38,6 +38,8 @@ import { useEffect, useRef, useState } from "react"
 import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
 import { addLink, deleteLink, getLinks, timeDifferenceInText, updateLinkTrackingUrl } from "@/backend/functions"
+import { AnalyticsBarChart } from "@/components/Chart/BarChart"
+
 
 
 export default function Home() {
@@ -62,6 +64,7 @@ export default function Home() {
   const [selectedLink, setSelectedLink] = useState(null);
 
 
+  
   useEffect(() => {
 
     async function fetchLinks() {
@@ -100,14 +103,18 @@ export default function Home() {
 
 
 
+  function removeHttpOrHttpsAndEndSlash(url) {
+    return url.replace(/(^\w+:|^)\/\//, "").replace(/\/$/, "");
+  }
+
   async function handleSubmit() {
 
     if (inputLink && inputTrackingLink) {
-      const result = await addLink(inputLink, inputTrackingLink);
+      const result = await addLink(removeHttpOrHttpsAndEndSlash(inputLink), removeHttpOrHttpsAndEndSlash(inputTrackingLink));
       if (result) {
         toast({
           title: "Link added",
-          description: `Link ${inputLink} added successfully`,
+          description: `Link '${removeHttpOrHttpsAndEndSlash(inputLink)}' added successfully`,
         });
         setLinksChanged(!linksChanged);
         setInputLink("");
@@ -116,7 +123,7 @@ export default function Home() {
       } else {
         toast({
           title: "Link exists",
-          description: `Link ${inputLink} already exists`,
+          description: `Link '${removeHttpOrHttpsAndEndSlash(inputLink)}' already exists`,
           type: "error",
         });
       }
@@ -340,8 +347,8 @@ export default function Home() {
 
               {
                 !isPickerOpen &&
-                <div>
-                  a
+                <div className="w-full h-[90%] justify-left items-center flex">
+                  <AnalyticsBarChart />
                 </div>
               }
 
