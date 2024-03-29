@@ -1,6 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-// should make a request to the API route and display the IP address in the browser.
+// how the api should work
+// 1. get the ip address from the request headers
+// 2. make a request to the ip-api.com/json/{ip} endpoint to get the country, countryCode, and city of the IP address
+// 4. if the request fails, data should be { geolocation: false, country: null, countryCode: null, city: null }
+// 5. if the request succeeds, data should be { geolocation: true, ...response.json data }  
+
+// then try to get the vpn data from the ipapi.is api
+// add the is_vpn field to the response data or set it to false if the request fails
+// should handle the edge cases where the IP address is not detected or the request to the ip-api.com/json/{ip} endpoint fails
+
 export default async function handler(req, res) {
 
   let ip = req.headers['x-real-ip'];
@@ -12,21 +21,21 @@ export default async function handler(req, res) {
     res.status(200).json({ ip: null, error: "No IP address detected!" });
   }
   else {
-    // http://ip-api.com/json/103.239.252.50
+    // http://ip-api.com/json/
+    try {
+      const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,countryCode,city`);
+      let data = await response.json();
 
-    const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,countryCode,city`);
-    const data = await response.json();
-
-    let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
-    if (isVpn.ok) {
-      let vpnData = await isVpn.json();
-      res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
-    }
-
-    else {
-
-      res.status(500).json({ ip, ...data, error: "Failed to get VPN data!" });
+      let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
+      if (isVpn.ok) {
+        let vpnData = await isVpn.json();
+        res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
+      }
+      else {
+        res.status(500).json({ ip, ...data, error: "Failed to get VPN data!" });
+      }
+    } catch (error) {
+      res.status(500).json({ ip, error: "Failed to get geolocation data!" });
     }
   }
-
 }

@@ -276,7 +276,7 @@ export default function Home() {
             <TabsList className="w-[fit-content] md:m-auto mb-2">
               <TabsTrigger value="analytics">View Analytics</TabsTrigger>
               <TabsTrigger value="edit">Edit Link</TabsTrigger>
-              <TabsTrigger value="map">Map Visualization </TabsTrigger>
+              {/* <TabsTrigger value="map">Map Visualization </TabsTrigger> */}
 
             </TabsList>
             <TabsContent value="edit" className="flex-1">
