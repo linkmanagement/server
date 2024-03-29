@@ -87,6 +87,9 @@ export default function Home() {
       setEditInputLink(selectedLink.url);
       setEditInputTrackingLink(selectedLink.tracking);
     }
+    else {
+      setCountry('world');
+    }
   }, [selectedLink]);
 
   async function handleDeleteLink(linkUrl) {
@@ -269,10 +272,10 @@ export default function Home() {
 
         {
           selectedLink &&
-          <Tabs defaultValue="edit" className="w-full mt-2 flex flex-col flex-1">
+          <Tabs defaultValue="analytics" className="w-full mt-2 flex flex-col flex-1">
             <TabsList className="w-[fit-content] m-auto mb-2">
-              <TabsTrigger value="edit">Edit Link</TabsTrigger>
               <TabsTrigger value="analytics">View Analytics</TabsTrigger>
+              <TabsTrigger value="edit">Edit Link</TabsTrigger>
               <TabsTrigger value="map">Map Visualization </TabsTrigger>
 
             </TabsList>
