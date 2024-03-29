@@ -69,3 +69,7 @@ body,
     /* Firefox */
   }
 }
+
+.recharts-rectangle.recharts-tooltip-cursor {
+  fill: #262626;
+}
