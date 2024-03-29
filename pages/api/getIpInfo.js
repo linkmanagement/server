@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       }
       else {
         let data = await response.json();
-        let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}`);
+        let isVpn = await fetch(`https://api.ipapi.is/?q=${ip}&key=46fc5d287960a8b2`);
         if (isVpn.ok) {
           let vpnData = await isVpn.json();
           res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
