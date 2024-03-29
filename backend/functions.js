@@ -79,6 +79,12 @@ async function addIpToVpnList(ip) {
     await addDoc(vpnCollection, { ip: ip});
 }
 
+async function isIpInVpnList(ip) {
+    const vpnCollection = collection(database, 'vpn');
+    const querySnapshot = await getDocs(query(vpnCollection, where('ip', '==', ip)));
+    return querySnapshot.docs.length > 0;
+}
+
 export {
     addLink,
     getLinks,
@@ -88,4 +94,5 @@ export {
     addAnalytics,
     getAnalytics,
     addIpToVpnList,
+    isIpInVpnList,
 }
