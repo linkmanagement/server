@@ -9,7 +9,6 @@ import { Toaster } from "@/components/ui/toaster"
 
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -30,6 +29,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
+import { addLink, getLinks, timeDifferenceInText } from "@/backend/functions"
 
 
 export default function Home() {
@@ -41,6 +41,55 @@ export default function Home() {
     year: 2023,
   });
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+
+  const [inputLink, setInputLink] = useState("");
+  const [inputTrackingLink, setInputTrackingLink] = useState("");
+
+  const [linksChanged, setLinksChanged] = useState(false);
+  const [selectedLink, setSelectedLink] = useState(null);
+
+
+  useEffect(() => {
+
+    async function fetchLinks() {
+      const links = await getLinks();
+      setLinks(links);
+    }
+    fetchLinks();
+  }, [linksChanged]);
+
+
+  async function handleSubmit() {
+
+    if (inputLink && inputTrackingLink) {
+      const result = await addLink(inputLink, inputTrackingLink);
+      if (result) {
+        toast({
+          title: "Link added",
+          description: `Link ${inputLink} added successfully`,
+        });
+        setLinksChanged(!linksChanged);
+        setInputLink("");
+        setInputTrackingLink("");
+      } else {
+        toast({
+          title: "Link exists",
+          description: `Link ${inputLink} already exists`,
+          type: "error",
+        });
+      }
+    } else {
+      toast({
+        title: "Invalid input",
+        description: "Please fill in both fields",
+        type: "error",
+      });
+    }
+
+
+  }
 
 
 
@@ -53,7 +102,7 @@ export default function Home() {
           <Sheet className="flex">
 
             <SheetTrigger asChild>
-              <Button variant="secondary" className="mr-2 w-[max-content]">View Links</Button>
+              <Button variant="secondary" className="mr-2 w-[max-content]">Your Links</Button>
             </SheetTrigger>
             <SheetContent className="text-foreground flex flex-col w-4/4 md:w-3/4">
               <SheetHeader>
@@ -65,15 +114,15 @@ export default function Home() {
               <div className="flex-1 overflow-y-scroll no-scrollbar">
 
                 {
-                  links.map((_, i) => (
+                  links.map((link, i) => (
                     <div key={i} className="bg-card p-4 rounded-md mb-4 space-y-4 border border-border">
-                      <p className="text-muted-foreground text-sm"> <span className="text-foreground font-semibold text-lg">Link {i + 1}</span>  - Created {2} days ago </p>
+                      <p className="text-muted-foreground text-sm"> <span className="text-foreground font-semibold text-lg">Link {i + 1}</span>  - Created {timeDifferenceInText(link.timestamp)} </p>
 
                       <div className="flex flex-col space-y-2">
                         <Label>Link URL</Label>
                         <Input
                           className="w-full"
-                          value="example.com"
+                          value={link.url}
                           readOnly
                         />
                       </div>
@@ -81,12 +130,12 @@ export default function Home() {
                         <Label>Tracking URL</Label>
                         <Input
                           className="w-full"
-                          value="example.com/track/1"
+                          value={link.tracking}
                           readOnly
                         />
                       </div>
                       <div className="flex flex-wrap">
-                        <Button variant="secondary">Detailed View</Button>
+                        <Button variant="secondary" onClick={() => setSelectedLink(link)}>Detailed View</Button>
                         <Button variant="destructive">Delete</Button>
                       </div>
                     </div>
@@ -106,7 +155,7 @@ export default function Home() {
 
           </Sheet>
 
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} >
             <DialogTrigger asChild>
               <Button variant="secondary"> Add Link </Button>
             </DialogTrigger>
@@ -122,89 +171,115 @@ export default function Home() {
                   <Label className="text-right">
                     Url
                   </Label>
-                  <Input value="Pedro Duarte" className="col-span-3" />
+                  <Input value={inputLink} className="col-span-3"
+                    onChange={(e) => setInputLink(e.target.value)}
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label className="text-right">
                     Tracking Url
                   </Label>
-                  <Input value="@peduarte" className="col-span-3" />
+                  <Input value={inputTrackingLink} className="col-span-3"
+                    onChange={(e) => setInputTrackingLink(e.target.value)}
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit"
-                  onClick={() => {
-                    toast({
-                      title: "Scheduled: Catch up",
-                      description: "Friday, February 10, 2023 at 5:57 PM",
-                    })
-                  }}
+
+                <Button
+                  onClick={handleSubmit}
                 >Add</Button>
+
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
 
         </div>
+        {
+          selectedLink &&
+          <div className="mt-2 text-muted-foreground text-sm flex items-center">
+            <p>
+              <span className="text-foreground font-semibold">Selected Link:</span> {selectedLink.url}
+            </p>
 
-        <div className="mt-2 text-muted-foreground text-sm">
-
-          <p>
-            Kellysecret.com
-          </p>
-        </div>
-
-        <Tabs defaultValue="edit" className="w-full mt-2 flex flex-col flex-1">
-          <TabsList className="w-[fit-content] mb-2">
-            <TabsTrigger value="edit">Edit Link</TabsTrigger>
-            <TabsTrigger value="analytics">View Analytics</TabsTrigger>
-            <TabsTrigger value="map">Map Visualization </TabsTrigger>
-
-          </TabsList>
-          <TabsContent value="edit" className="bg-red-400 flex-1">
-
-            <div className="">
-              Edit Link
+            <div onClick={() => setSelectedLink(null)} className="ml-2 cursor-pointer text-foreground font-semibold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+              X
             </div>
+          </div>
 
-          </TabsContent>
+        }
 
-          <TabsContent value="analytics" className="flex-1">
 
-            <div className="">
-              <div className="flex flex-col space-y-2 position-relative w-[200px]">
-                <MonthInput
-                  selected={selectedMonthData}
-                  setShowMonthPicker={setIsPickerOpen}
-                  showMonthPicker={isPickerOpen}
-                />
-                {isPickerOpen ? (
-                  <MonthPicker
-                    size="small"
-                    setIsOpen={setIsPickerOpen}
+
+        {
+          selectedLink &&
+          <Tabs defaultValue="edit" className="w-full mt-2 flex flex-col flex-1">
+            <TabsList className="w-[fit-content] mb-2">
+              <TabsTrigger value="edit">Edit Link</TabsTrigger>
+              <TabsTrigger value="analytics">View Analytics</TabsTrigger>
+              <TabsTrigger value="map">Map Visualization </TabsTrigger>
+
+            </TabsList>
+            <TabsContent value="edit" className="bg-red-400 flex-1">
+
+              <div className="">
+                Edit Link {JSON.stringify(selectedLink)}
+              </div>
+
+            </TabsContent>
+
+            <TabsContent value="analytics" className="flex-1">
+
+              <div className="">
+                <div className="flex flex-col space-y-2 position-relative w-[200px]">
+                  <MonthInput
                     selected={selectedMonthData}
-                    onChange={setSelectedMonthData}
+                    setShowMonthPicker={setIsPickerOpen}
+                    showMonthPicker={isPickerOpen}
                   />
-                ) : null}
+                  {isPickerOpen ? (
+                    <MonthPicker
+                      size="small"
+                      setIsOpen={setIsPickerOpen}
+                      selected={selectedMonthData}
+                      onChange={setSelectedMonthData}
+                    />
+                  ) : null}
+                </div>
               </div>
-            </div>
 
-            {
-              !isPickerOpen &&
-              <div>
-                a
+              {
+                !isPickerOpen &&
+                <div>
+                  a
+                </div>
+              }
+
+            </TabsContent>
+
+            <TabsContent value="map" className="bg-green-400 flex-1">
+              <div className="">
+                Map
               </div>
-            }
+            </TabsContent>
 
-          </TabsContent>
+          </Tabs>
 
-          <TabsContent value="map" className="bg-green-400 flex-1">
-            <div className="">
-              Map
-            </div>
-          </TabsContent>
+        }
 
-        </Tabs>
+        {
+          !selectedLink &&
+          <div className="w-full mt-2 flex flex-col flex-1 items-center justify-center">
+            <p className="text-muted-foreground text-lg font-semibold mt-4">
+              No link selected!
+            </p>
+            <img src="/no_link_selected.png" alt="empty" className="w-[200px]" />
+            <p className="text-muted-foreground text-lg text-center">
+              <span className="text-foreground font-semibold">Note:</span> Click on the detailed view button from the link to see more information about a link.
+            </p>
+          </div>
+        }
 
 
 
