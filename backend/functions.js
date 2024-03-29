@@ -22,6 +22,24 @@ async function getLinks() {
     return linksSnapshot.docs.map(doc => doc.data());
 }
 
+
+async function deleteLink(linkUrl) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    await deleteDoc(doc.ref);
+}
+
+async function updateLinkTrackingUrl(linkUrl, trackingLinkUrl) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    let link = doc.data();
+    link.tracking = trackingLinkUrl;
+    await updateDoc(doc.ref, link);
+
+}
+
 // returns the differecne to days ago or hours ago or minutes ago based on the appropiate difference
 function timeDifferenceInText(timestamp) {
     const now = Date.now();
@@ -39,17 +57,10 @@ function timeDifferenceInText(timestamp) {
     return `${minutes} minutes ago`;
 }
 
-
-async function deleteLink(linkUrl) {
-    const linksCollection = collection(database, 'links');
-    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
-    const doc = querySnapshot.docs[0];
-    await deleteDoc(doc.ref);
-}
-
 export {
     addLink,
     getLinks,
     timeDifferenceInText,
-    deleteLink
+    deleteLink,
+    updateLinkTrackingUrl
 }

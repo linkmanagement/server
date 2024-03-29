@@ -37,7 +37,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
-import { addLink, deleteLink, getLinks, timeDifferenceInText } from "@/backend/functions"
+import { addLink, deleteLink, getLinks, timeDifferenceInText, updateLinkTrackingUrl } from "@/backend/functions"
 
 
 export default function Home() {
@@ -55,6 +55,9 @@ export default function Home() {
   const [inputLink, setInputLink] = useState("");
   const [inputTrackingLink, setInputTrackingLink] = useState("");
 
+  const [editInputLink, setEditInputLink] = useState("");
+  const [editInputTrackingLink, setEditInputTrackingLink] = useState("");
+
   const [linksChanged, setLinksChanged] = useState(false);
   const [selectedLink, setSelectedLink] = useState(null);
 
@@ -68,10 +71,33 @@ export default function Home() {
     fetchLinks();
   }, [linksChanged]);
 
+  useEffect(() => {
+    if (selectedLink) {
+      setEditInputLink(selectedLink.url);
+      setEditInputTrackingLink(selectedLink.tracking);
+    }
+  }, [selectedLink]);
+
   async function handleDeleteLink(linkUrl) {
     await deleteLink(linkUrl);
+    toast({
+      title: "Link deleted",
+      description: `Link ${linkUrl} deleted successfully`,
+    });
     setLinksChanged(!linksChanged);
+
   }
+
+  async function handleUpdateLink() {
+    await updateLinkTrackingUrl(editInputLink, editInputTrackingLink);
+    toast({
+      title: "Link updated",
+      description: `Link ${editInputLink} updated successfully`,
+    });
+    setLinksChanged(!linksChanged)
+  }
+
+
 
 
   async function handleSubmit() {
@@ -242,7 +268,7 @@ export default function Home() {
                     <CardTitle>Edit Link</CardTitle>
                     <CardDescription>
                       <p className="text-muted-foreground">
-                        You can edit the link and tracking url here.
+                        You can edit the tracking url here.
                       </p>
                     </CardDescription>
                   </CardHeader>
@@ -253,7 +279,8 @@ export default function Home() {
                       <Label>Link URL</Label>
                       <Input
                         className="w-full"
-                        value={selectedLink.url}
+                        value={editInputLink}
+                        onChange={(e) => setEditInputLink(e.target.value)}
                         readOnly
                       />
 
@@ -261,18 +288,23 @@ export default function Home() {
 
                     <div className="flex flex-col space-y-2 mt-4">
 
-                      <Label>Tracking URL</Label>
+                      <Label>Tracking URL
+                        <span className="text-muted-foreground text-xs"> (Edit the tracking url to update)</span>
+
+                      </Label>
                       <Input
                         className="w-full"
-                        value={selectedLink.tracking}
-                        readOnly
+                        value={editInputTrackingLink}
+                        onChange={(e) => setEditInputTrackingLink(e.target.value)}
                       />
                     </div>
 
-                    <div className="flex flex-wrap mt-4">
+                    <div className="flex flex-wrap mt-4 gap-2">
 
-                      <Button variant="secondary" onClick={() => { }} > Update Link</Button>
-                      <Button variant="destructive" onClick={async () => { handleDeleteLink(selectedLink.url) }}>Delete Link</Button>
+                      <Button variant="secondary" onClick={async () => { await handleUpdateLink() }}>
+                        Update
+                      </Button>
+                      <Button variant="destructive" onClick={async () => { await handleDeleteLink(selectedLink.url); setSelectedLink(null) }}>Delete Link</Button>
 
                     </div>
                   </CardContent>
