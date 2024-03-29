@@ -57,10 +57,6 @@ function timeDifferenceInText(timestamp) {
     return `${minutes} minutes ago`;
 }
 
-async function addAnalytics(linkUrl, ip, country, countryCode) {
-    const analyticsCollection = collection(database, 'analytics');
-    await addDoc(analyticsCollection, { url: linkUrl, ip, country, countryCode, timestamp: Date.now() });
-}
 
 async function getAnalytics(linkUrl) {
     const analyticsCollection = collection(database, 'analytics');
@@ -74,6 +70,13 @@ async function addIpToVpnList(ip) {
     const vpnCollection = collection(database, 'vpn');
     await addDoc(vpnCollection, { ip: ip });
 }
+
+async function addAnalytics(linkUrl, ip, country, countryCode) {
+    const analyticsCollection = collection(database, 'analytics');
+    let x = await addDoc(analyticsCollection, { url: linkUrl, ip, country, countryCode, timestamp: Date.now() });
+    return x;
+}
+
 
 async function isIpInVpnList(ip) {
     const vpnCollection = collection(database, 'vpn');

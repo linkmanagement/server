@@ -17,8 +17,8 @@ export default async function handler(req, res) {
       return;
     }
     else {
-      await addAnalytics(url, ip, country, countryCode);
-      res.status(200).json({ message: 'Analytics added' });
+      let dbResponse = await addAnalytics(url, ip, country, countryCode);
+      res.status(200).json({ message: 'Analytics added', dbResponse });
     }
 
 
