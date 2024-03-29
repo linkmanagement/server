@@ -40,8 +40,16 @@ function timeDifferenceInText(timestamp) {
 }
 
 
+async function deleteLink(linkUrl) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    await deleteDoc(doc.ref);
+}
+
 export {
     addLink,
     getLinks,
-    timeDifferenceInText
+    timeDifferenceInText,
+    deleteLink
 }

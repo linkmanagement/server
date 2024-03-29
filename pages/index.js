@@ -4,6 +4,14 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast, useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 
 
@@ -29,7 +37,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
-import { addLink, getLinks, timeDifferenceInText } from "@/backend/functions"
+import { addLink, deleteLink, getLinks, timeDifferenceInText } from "@/backend/functions"
 
 
 export default function Home() {
@@ -42,7 +50,7 @@ export default function Home() {
   });
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const [inputLink, setInputLink] = useState("");
   const [inputTrackingLink, setInputTrackingLink] = useState("");
@@ -60,6 +68,11 @@ export default function Home() {
     fetchLinks();
   }, [linksChanged]);
 
+  async function handleDeleteLink(linkUrl) {
+    await deleteLink(linkUrl);
+    setLinksChanged(!linksChanged);
+  }
+
 
   async function handleSubmit() {
 
@@ -73,6 +86,7 @@ export default function Home() {
         setLinksChanged(!linksChanged);
         setInputLink("");
         setInputTrackingLink("");
+        setIsDialogOpen(false);
       } else {
         toast({
           title: "Link exists",
@@ -95,11 +109,12 @@ export default function Home() {
 
 
 
+
   return (
     <div className="bg-background text-foreground h-[100%] p-2 w-[100%]">
       <div className="w-[100%] flex flex-col h-[100%]">
         <div>
-          <Sheet className="flex">
+          <Sheet className="flex" open={isSheetOpen} onOpenChange={setIsSheetOpen}>
 
             <SheetTrigger asChild>
               <Button variant="secondary" className="mr-2 w-[max-content]">Your Links</Button>
@@ -135,8 +150,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="flex flex-wrap">
-                        <Button variant="secondary" onClick={() => setSelectedLink(link)}>Detailed View</Button>
-                        <Button variant="destructive">Delete</Button>
+                        <Button variant="secondary" onClick={() => { setSelectedLink(link); setIsSheetOpen(false); }}>Detailed View</Button>
                       </div>
                     </div>
                   ))
@@ -215,17 +229,60 @@ export default function Home() {
         {
           selectedLink &&
           <Tabs defaultValue="edit" className="w-full mt-2 flex flex-col flex-1">
-            <TabsList className="w-[fit-content] mb-2">
+            <TabsList className="w-[fit-content] m-auto mb-2">
               <TabsTrigger value="edit">Edit Link</TabsTrigger>
               <TabsTrigger value="analytics">View Analytics</TabsTrigger>
               <TabsTrigger value="map">Map Visualization </TabsTrigger>
 
             </TabsList>
-            <TabsContent value="edit" className="bg-red-400 flex-1">
+            <TabsContent value="edit" className="flex-1">
+              <div className="flex flex-col space-y-4 h-[90%] md:h-[50%] w-full">
+                <Card className="w-[90%] md:w-[60%] border-border m-auto flex flex-col items-center p-4 md:flex-row">
+                  <CardHeader>
+                    <CardTitle>Edit Link</CardTitle>
+                    <CardDescription>
+                      <p className="text-muted-foreground">
+                        You can edit the link and tracking url here.
+                      </p>
+                    </CardDescription>
+                  </CardHeader>
 
-              <div className="">
-                Edit Link {JSON.stringify(selectedLink)}
+                  <CardContent className="flex flex-col space-y-4 w-full">
+
+                    <div className="flex flex-col space-y-2">
+                      <Label>Link URL</Label>
+                      <Input
+                        className="w-full"
+                        value={selectedLink.url}
+                        readOnly
+                      />
+
+                    </div>
+
+                    <div className="flex flex-col space-y-2 mt-4">
+
+                      <Label>Tracking URL</Label>
+                      <Input
+                        className="w-full"
+                        value={selectedLink.tracking}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap mt-4">
+
+                      <Button variant="secondary" onClick={() => { }} > Update Link</Button>
+                      <Button variant="destructive" onClick={async () => { handleDeleteLink(selectedLink.url) }}>Delete Link</Button>
+
+                    </div>
+                  </CardContent>
+
+
+                </Card>
               </div>
+
+
+
 
             </TabsContent>
 
@@ -258,7 +315,7 @@ export default function Home() {
 
             </TabsContent>
 
-            <TabsContent value="map" className="bg-green-400 flex-1">
+            <TabsContent value="map" className="flex-1">
               <div className="">
                 Map
               </div>
