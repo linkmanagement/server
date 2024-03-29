@@ -63,11 +63,11 @@ async function addAnalytics(linkUrl, ip, country, countryCode) {
 }
 
 async function getAnalytics(linkUrl) {
-    const linksCollection = collection(database, 'links');
-    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const analyticsCollection = collection(database, 'analytics');
+    const querySnapshot = await getDocs(query(analyticsCollection, where('url', '==', linkUrl)));
     const doc = querySnapshot.docs[0];
-    let link = doc.data();
-    return link.analytics;
+    let analytics = doc.data();
+    return analytics;
 }
 
 async function addIpToVpnList(ip) {
