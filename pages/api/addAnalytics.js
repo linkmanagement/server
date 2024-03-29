@@ -1,6 +1,6 @@
 import { addAnalytics } from "@/backend/functions";
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
 
   if(req.method === 'POST') {
     // Process a POST request
@@ -17,7 +17,7 @@ export default function handler(req, res) {
       return;
     }
     else {
-      addAnalytics(url, ip, country, countryCode);
+      await addAnalytics(url, ip, country, countryCode);
       res.status(200).json({ message: 'Analytics added' });
     }
 
