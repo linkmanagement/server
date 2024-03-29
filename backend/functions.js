@@ -74,6 +74,11 @@ async function getAnalytics(linkUrl) {
     return link.analytics;
 }
 
+async function addIpToVpnList(ip) {
+    const vpnCollection = collection(database, 'vpn');
+    await addDoc(vpnCollection, { ip: ip});
+}
+
 export {
     addLink,
     getLinks,
@@ -81,5 +86,6 @@ export {
     deleteLink,
     updateLinkTrackingUrl,
     addAnalytics,
-    getAnalytics
+    getAnalytics,
+    addIpToVpnList,
 }

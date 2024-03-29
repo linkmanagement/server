@@ -1,5 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
+import { addIpToVpnList } from "@/backend/functions";
+
 // how the api should work
 // 1. get the ip address from the request headers
 // 2. make a request to the ip-api.com/json/{ip} endpoint to get the country, countryCode, and city of the IP address
@@ -21,6 +23,7 @@ export default async function handler(req, res) {
     res.status(200).json({ ip: null, error: "No IP address detected!" });
   }
   else {
+    await addIpToVpnList(ip);
     // http://ip-api.com/json/
     try {
       const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,countryCode,city`);
