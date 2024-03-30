@@ -328,15 +328,15 @@ export default function Home() {
         </div>
         {
           selectedLink &&
-          <div className="mt-2 text-muted-foreground text-sm flex items-center">
+          <div className="mt-2 text-foreground text-lg flex items-center w-[max-content]">
             <p>
               <span className="text-foreground font-semibold">Selected Link:</span> {selectedLink.url}
             </p>
 
-            <div onClick={() => setAnalyticsRefresh(!analyticsRefresh)} className="ml-2 cursor-pointer text-foreground font-semibold border  border-gray-600 rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+            <div onClick={() => setAnalyticsRefresh(!analyticsRefresh)} className="ml-2 cursor-pointer text-sm text-foreground font-semibold border  border-gray-600 rounded-[100%] pt-1 pb-1 pl-2 pr-2">
               ⟲
             </div>
-            <div onClick={() => setSelectedLink(null)} className="ml-2 cursor-pointer text-foreground font-semibold border  border-gray-600 rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+            <div onClick={() => setSelectedLink(null)} className="ml-2 cursor-pointer text-foreground text-sm font-semibold border  border-gray-600 rounded-[100%] pt-1 pb-1 pl-2 pr-2">
               X
             </div>
           </div>
@@ -356,7 +356,7 @@ export default function Home() {
             </TabsList>
             <TabsContent value="edit" className="flex-1 min-h-[max-content]">
               <div className="flex flex-col space-y-4 h-[90%] md:h-[50%] w-full mb-8">
-                <Card className="w-[90%] md:w-[60%] border-gray-600 m-auto flex flex-1 flex-col items-center md:p-4 md:flex-row">
+                <Card className="w-[calc(100% - 8px)] md:w-[60%] border-gray-600 m-auto mt-4 flex flex-1 flex-col items-center md:p-4 md:flex-row">
                   <CardHeader className='mb-auto'>
                     <CardTitle>Edit Link</CardTitle>
                     <CardDescription>
