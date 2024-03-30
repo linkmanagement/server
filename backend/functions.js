@@ -30,6 +30,13 @@ async function deleteLink(linkUrl) {
     await deleteDoc(doc.ref);
 }
 
+async function getLink(linkUrl) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    return doc.data();
+}
+
 async function updateLinkTrackingUrl(linkUrl, trackingLinkUrl) {
     const linksCollection = collection(database, 'links');
     const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
@@ -93,4 +100,5 @@ export {
     getAnalytics,
     addIpToVpnList,
     isIpInVpnList,
+    getLink
 }
