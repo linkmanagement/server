@@ -38,7 +38,7 @@ export default function CountrySelector({
   const [query, setQuery] = useState("");
 
   return (
-    <div ref={ref} className="mt-2 md:ml-2 md:mt-0 w-[200px] relative">
+    <div ref={ref} className="mt-2 md:ml-2 md:mt-0 w-[200px] relative  border border-gray-600">
       <div className="relative">
         <button
           type="button"

@@ -2,17 +2,20 @@
   width: max-content;
   min-width: 200px;
   cursor: pointer;
-  font-size: 14px;
   display: flex;
   gap: 16px;
+  height: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-top: 2px;
+
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  border-radius: 4px;
   border: 1px solid #0000005b;
   background: var(--input-bg-color);
   color: var(--input-text-color);
   margin-bottom: 4px;
+  border: 1px solid #6b7280;
 }
 
 /* write it as tailwind */

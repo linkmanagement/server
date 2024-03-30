@@ -246,7 +246,7 @@ export default function Home() {
 
                 {
                   links.map((link, i) => (
-                    <div key={i} className="bg-card p-4 rounded-md mb-4 space-y-4 border border-border">
+                    <div key={i} className="bg-card p-4 rounded-md mb-4 space-y-4 border border-gray-600">
                       <p className="text-muted-foreground text-sm"> <span className="text-foreground font-semibold text-lg">Link {i + 1}</span>  - Created {timeDifferenceInText(link.timestamp)} </p>
 
                       <div className="flex flex-col space-y-2">
@@ -273,7 +273,7 @@ export default function Home() {
                 }
               </div>
 
-              <SheetFooter className="border-t border-border mt-4 pt-4">
+              <SheetFooter className="border-t  border-gray-600 mt-4 pt-4">
                 <SheetDescription className="text-muted-foreground">
                   2021 © Link Management Server
                 </SheetDescription>
@@ -333,10 +333,10 @@ export default function Home() {
               <span className="text-foreground font-semibold">Selected Link:</span> {selectedLink.url}
             </p>
 
-            <div onClick={() => setAnalyticsRefresh(!analyticsRefresh)} className="ml-2 cursor-pointer text-foreground font-semibold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+            <div onClick={() => setAnalyticsRefresh(!analyticsRefresh)} className="ml-2 cursor-pointer text-foreground font-semibold border  border-gray-600 rounded-[100%] pt-1 pb-1 pl-2 pr-2">
               ⟲
             </div>
-            <div onClick={() => setSelectedLink(null)} className="ml-2 cursor-pointer text-foreground font-semibold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+            <div onClick={() => setSelectedLink(null)} className="ml-2 cursor-pointer text-foreground font-semibold border  border-gray-600 rounded-[100%] pt-1 pb-1 pl-2 pr-2">
               X
             </div>
           </div>
@@ -348,7 +348,7 @@ export default function Home() {
         {
           selectedLink &&
           <Tabs defaultValue="analytics" className="w-full mt-2 flex flex-col flex-1">
-            <TabsList className="w-[fit-content] md:m-auto mb-2">
+            <TabsList className="w-[fit-content] md:m-auto mb-2 border border-gray-600">
               <TabsTrigger value="analytics">View Analytics</TabsTrigger>
               <TabsTrigger value="edit">Edit Link</TabsTrigger>
               {/* <TabsTrigger value="map">Map Visualization </TabsTrigger> */}
@@ -356,7 +356,7 @@ export default function Home() {
             </TabsList>
             <TabsContent value="edit" className="flex-1 min-h-[max-content]">
               <div className="flex flex-col space-y-4 h-[90%] md:h-[50%] w-full mb-8">
-                <Card className="w-[90%] md:w-[60%] border-border m-auto flex flex-1 flex-col items-center p-4 md:flex-row">
+                <Card className="w-[90%] md:w-[60%] border-gray-600 m-auto flex flex-1 flex-col items-center md:p-4 md:flex-row">
                   <CardHeader className='mb-auto'>
                     <CardTitle>Edit Link</CardTitle>
                     <CardDescription>
@@ -397,9 +397,9 @@ export default function Home() {
                       />
                     </div>
 
-                    <div className="flex mt-4 space-x-2">
+                    <div className="flex space-x-2 bg-background p-4 border border-gray-600" >
 
-                      <Button variant="secondary" onClick={async () => { await handleUpdateLink() }}>
+                      <Button variant="secondary" className="border border-gray-600" onClick={async () => { await handleUpdateLink() }}>
                         Update
                       </Button>
                       <Button variant="destructive" onClick={async () => { await handleDeleteLink(selectedLink.url); setSelectedLink(null) }}>Delete Link</Button>
@@ -407,18 +407,18 @@ export default function Home() {
                     </div>
 
 
-                    <div className="flex flex-col flex-wrap mt-4 gap-2">
-                      <Label> Blocked Countries
-                        <span className="text-muted-foreground text-xs"> (Edit the tracking url to update)</span>
-                      </Label>
+                    <Label> Blocked Countries
+                      <span className="text-muted-foreground text-xs"> (Edit the tracking url to update)</span>
+                    </Label>
+                    <div className="flex flex-col flex-wrap mt-2 gap-2 bg-background p-2 border  border-gray-600">
                       <div className="flex flex-wrap gap-4">
                         <CountrySelector onlyCountries={true} id={'countries'} open={isOpen} onToggle={() => setIsOpen(!isOpen)} onChange={val => setBlockedCountry(val)} selectedValue={COUNTRIES.find(option => option.value === blockedCountry)} />
-                        <Button variant="outline" className="border border-gray-600" onClick={handleBlockedAdition}>
+                        <Button variant="secondary" className="border border-gray-600" onClick={handleBlockedAdition}>
                           Add to Blocklist
                         </Button>
                       </div>
 
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 md:p-2">
                         {
                           blockedCountries?.map((countryCode, i) => (
                             <div key={i} className="flex flex-wrap bg-accent items-center justify-center border border-gray-600">
@@ -426,7 +426,7 @@ export default function Home() {
 
                               <div onClick={
                                 () => handleBlockedRemoval(COUNTRIES.find(option => option.value === countryCode).value)
-                              } className="cursor-pointer text-muted-foreground hover:text-red-500 font-bold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+                              } className="cursor-pointer text-muted-foreground hover:text-red-500 font-bold rounded-[100%] pt-1 pb-1 pl-2 pr-2">
                                 X
                               </div>
                             </div>
