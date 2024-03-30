@@ -61,9 +61,8 @@ function timeDifferenceInText(timestamp) {
 async function getAnalytics(linkUrl) {
     const analyticsCollection = collection(database, 'analytics');
     const querySnapshot = await getDocs(query(analyticsCollection, where('url', '==', linkUrl)));
-    const doc = querySnapshot.docs[0];
-    let analytics = doc.data();
-    return analytics;
+    const doc = querySnapshot.docs;
+    return doc.map(doc => doc.data());
 }
 
 async function addIpToVpnList(ip) {

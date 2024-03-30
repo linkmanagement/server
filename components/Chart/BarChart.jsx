@@ -1,39 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { COUNTRIES } from '../CountrySelector/countries';
 
-const data = [
-    { name: 1, clicks: 2890 },
-    { name: 2, clicks: 3200 },
-    { name: 3, clicks: 1800 },
-    { name: 4, clicks: 2100 },
-    { name: 5, clicks: 4000 },
-    { name: 6, clicks: 2500 },
-    { name: 7, clicks: 1600 },
-    { name: 8, clicks: 1800 },
-    { name: 9, clicks: 2700 },
-    { name: 10, clicks: 3900 },
-    { name: 11, clicks: 3200 },
-    { name: 12, clicks: 2400 },
-    { name: 13, clicks: 1800 },
-    { name: 14, clicks: 2200 },
-    { name: 15, clicks: 3500 },
-    { name: 16, clicks: 4200 },
-    { name: 17, clicks: 5200 },
-    { name: 18, clicks: 3900 },
-    { name: 19, clicks: 4700 },
-    { name: 20, clicks: 5600 },
-    { name: 21, clicks: 4500 },
-    { name: 22, clicks: 3600 },
-    { name: 23, clicks: 3900 },
-    { name: 24, clicks: 4800 },
-    { name: 25, clicks: 3900 },
-    { name: 26, clicks: 2800 },
-    { name: 27, clicks: 2200 },
-    { name: 28, clicks: 1600 },
-    { name: 29, clicks: 2100 },
-    { name: 30, clicks: 3600 },
-    { name: 31, clicks: 39000 }
-];
 
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -53,11 +21,56 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 
+function filterAnalytics(analytics, selectedMonthYear, country) {
 
-export function AnalyticsBarChart() {
+    let filteredAnalytics = analytics?.filter(analytic => {
+        let analyticDate = new Date(analytic.timestamp);
+        let analyticMonth = analyticDate.getMonth() + 1;
+        let analyticYear = analyticDate.getFullYear();
+        let analyticCountry = analytic.countryCode;
+        console.log('1', analyticMonth, analyticYear, analyticCountry);
+        console.log('2', selectedMonthYear.month, selectedMonthYear.year, country);
+        return analyticMonth === selectedMonthYear.month && analyticYear === selectedMonthYear.year && (analyticCountry === country || country === 'world');
+    });
+
+    return filteredAnalytics;
+}
+
+function convertAnalyticsToChartData(analytics, selectedMonthYear) {
+    let data = [];
+    let clicks = 0;
+    let month = selectedMonthYear.month;
+    let year = selectedMonthYear.year;
+
+    let daysInMonth = new Date(year, month, 0).getDate();
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        let clicks = analytics.filter(analytic => {
+            let analyticDate = new Date(analytic.timestamp);
+            let analyticDay = analyticDate.getDate();
+            return analyticDay === i;
+        }).length;
+        data.push({ name: i, clicks: clicks });
+    }
+
+    return data;
+}
+
+
+
+export function AnalyticsBarChart({ analytics, selectedMonthYear, country }) {
+    let data = convertAnalyticsToChartData(filterAnalytics(analytics, selectedMonthYear, country), selectedMonthYear);
+    let totalClicks = data.reduce((acc, curr) => acc + curr.clicks, 0);
+    let countryName = COUNTRIES.find(c => c.value === country)?.title;
+    let monthName = new Date(selectedMonthYear.year, selectedMonthYear.month - 1, 1).toLocaleString('default', { month: 'long' });
+    let timeText = `${countryName} | ${monthName}, ${selectedMonthYear.year} | total Clicks ${totalClicks}`;
 
     return (
-        <div className='w-full h-[100%] justify-center items-center flex'>
+        <div className='w-full h-[100%] justify-center items-center flex flex-col'>
+            <p className='text-sm text-[#10b981]'>
+                {timeText}
+            </p>
+
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                     width={300}

@@ -37,7 +37,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
-import { addLink, deleteLink, getLinks, timeDifferenceInText, updateLinkTrackingUrl } from "@/backend/functions"
+import { addLink, deleteLink, getAnalytics, getLinks, timeDifferenceInText, updateLinkTrackingUrl } from "@/backend/functions"
 import { AnalyticsBarChart } from "@/components/Chart/BarChart"
 import { COUNTRIES } from "@/components/CountrySelector/countries"
 import CountrySelector from "@/components/CountrySelector/CountrySelector"
@@ -54,6 +54,7 @@ export default function Home() {
 
 
   const [links, setLinks] = useState([]);
+  const [analytics, setAnalytics] = useState([]);
   const [selectedMonthData, setSelectedMonthData] = useState({
     month: 9,
     year: 2023,
@@ -70,6 +71,7 @@ export default function Home() {
 
   const [linksChanged, setLinksChanged] = useState(false);
   const [selectedLink, setSelectedLink] = useState(null);
+  const [analyticsRefresh, setAnalyticsRefresh] = useState(false);
 
 
 
@@ -82,13 +84,41 @@ export default function Home() {
     fetchLinks();
   }, [linksChanged]);
 
+
+  useEffect(() => {
+
+    if (selectedLink) {
+      async function fetchAnalytics() {
+        let data = await getAnalytics(selectedLink.url);
+        setAnalytics(data);
+        toast({
+          title: "Refresing ... ",
+          description: `Successfully refreshed analytics Data!`,
+        })
+      }
+
+      fetchAnalytics();
+    }
+  }, [analyticsRefresh])
+
+
+
   useEffect(() => {
     if (selectedLink) {
+
+      async function fetchAnalytics() {
+        let data = await getAnalytics(selectedLink.url);
+        setAnalytics(data);
+      }
+
+      fetchAnalytics();
+
       setEditInputLink(selectedLink.url);
       setEditInputTrackingLink(selectedLink.tracking);
     }
     else {
       setCountry('world');
+      setAnalytics([]);
     }
   }, [selectedLink]);
 
@@ -261,6 +291,9 @@ export default function Home() {
               <span className="text-foreground font-semibold">Selected Link:</span> {selectedLink.url}
             </p>
 
+            <div onClick={() => setAnalyticsRefresh(!analyticsRefresh)} className="ml-2 cursor-pointer text-foreground font-semibold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+              ⟲
+            </div>
             <div onClick={() => setSelectedLink(null)} className="ml-2 cursor-pointer text-foreground font-semibold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
               X
             </div>
@@ -371,7 +404,7 @@ export default function Home() {
               {
                 !isPickerOpen &&
                 <div className="w-full mt-auto h-[80%] justify-left items-center flex">
-                  <AnalyticsBarChart />
+                  <AnalyticsBarChart analytics={analytics} selectedMonthYear={selectedMonthData} country={country} />
                 </div>
               }
 
