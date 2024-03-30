@@ -28,8 +28,6 @@ function filterAnalytics(analytics, selectedMonthYear, country) {
         let analyticMonth = analyticDate.getMonth() + 1;
         let analyticYear = analyticDate.getFullYear();
         let analyticCountry = analytic.countryCode;
-        console.log('1', analyticMonth, analyticYear, analyticCountry);
-        console.log('2', selectedMonthYear.month, selectedMonthYear.year, country);
         return analyticMonth === selectedMonthYear.month && analyticYear === selectedMonthYear.year && (analyticCountry === country || country === 'world');
     });
 
