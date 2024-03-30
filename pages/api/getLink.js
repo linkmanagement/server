@@ -5,6 +5,7 @@ export default async function handler(req, res) {
   if(req.method === 'POST') {
     // Process a POST request
     let data = req.body;
+    let url = data.url;
 
 
     if(!url) {
