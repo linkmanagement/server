@@ -37,7 +37,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { MonthInput } from "@/components/MonthInput/MonthInput"
 import { MonthPicker } from "@/components/MonthPicker/MonthPicker"
-import { addLink, deleteLink, getAnalytics, getLinks, timeDifferenceInText, updateLinkTrackingUrl } from "@/backend/functions"
+import { addLink, deleteLink, getAnalytics, getLinks, timeDifferenceInText, updateBlocked, updateLinkTrackingUrl } from "@/backend/functions"
 import { AnalyticsBarChart } from "@/components/Chart/BarChart"
 import { COUNTRIES } from "@/components/CountrySelector/countries"
 import CountrySelector from "@/components/CountrySelector/CountrySelector"
@@ -50,7 +50,9 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   // Default this to a country's code to preselect it
   const [country, setCountry] = useState('world');
-  
+  const [blockedCountry, setBlockedCountry] = useState('AF');
+  const [blockedCountries, setBlockedCountries] = useState([]);
+
   function currentMonthAndYear() {
     const currentDate = new Date();
     return {
@@ -106,7 +108,40 @@ export default function Home() {
 
       fetchAnalytics();
     }
-  }, [analyticsRefresh])
+  }, [analyticsRefresh]);
+
+
+  async function handleBlockedAdition() {
+
+    if (blockedCountries.includes(blockedCountry)) {
+      toast({
+        title: "Country already blocked",
+        description: `Country ${COUNTRIES.find(option => option.value === blockedCountry).title} is already blocked`,
+        type: "error",
+      });
+      return;
+    }
+
+    const newBlocked = [...blockedCountries, blockedCountry];
+    await updateBlocked(selectedLink.url, newBlocked);
+    setBlockedCountries(newBlocked);
+    setLinksChanged(!linksChanged);
+    toast({
+      title: "Country Blocked",
+      description: `Country  ${COUNTRIES.find(option => option.value === blockedCountry).title} blocked successfully`,
+    });
+  }
+
+  async function handleBlockedRemoval(country) {
+    const newBlocked = blockedCountries.filter(c => c !== country);
+    await updateBlocked(selectedLink.url, newBlocked);
+    setBlockedCountries(newBlocked);
+    setLinksChanged(!linksChanged);
+    toast({
+      title: "Country Unblocked",
+      description: `Country ${COUNTRIES.find(option => option.value === blockedCountry).title} unblocked successfully`,
+    });
+  }
 
 
 
@@ -119,7 +154,7 @@ export default function Home() {
       }
 
       fetchAnalytics();
-
+      setBlockedCountries(selectedLink.blocked)
       setEditInputLink(selectedLink.url);
       setEditInputTrackingLink(selectedLink.tracking);
     }
@@ -192,8 +227,8 @@ export default function Home() {
 
 
   return (
-    <div className="bg-background text-foreground h-[100%] p-2 w-[100%]">
-      <div className="w-[100%] flex flex-col h-[100%]">
+    <div className="bg-background text-foreground h-[100%] min-h-[max-content] p-2 w-[100%]">
+      <div className="w-[100%] flex flex-col h-[100%] min-h-[max-content]">
         <div>
           <Sheet className="flex" open={isSheetOpen} onOpenChange={setIsSheetOpen}>
 
@@ -319,19 +354,24 @@ export default function Home() {
               {/* <TabsTrigger value="map">Map Visualization </TabsTrigger> */}
 
             </TabsList>
-            <TabsContent value="edit" className="flex-1">
-              <div className="flex flex-col space-y-4 h-[90%] md:h-[50%] w-full">
-                <Card className="w-[90%] md:w-[60%] border-border m-auto flex flex-col items-center p-4 md:flex-row">
-                  <CardHeader>
+            <TabsContent value="edit" className="flex-1 min-h-[max-content]">
+              <div className="flex flex-col space-y-4 h-[90%] md:h-[50%] w-full mb-8">
+                <Card className="w-[90%] md:w-[60%] border-border m-auto flex flex-1 flex-col items-center p-4 md:flex-row">
+                  <CardHeader className='mb-auto'>
                     <CardTitle>Edit Link</CardTitle>
                     <CardDescription>
-                      <p className="text-muted-foreground">
-                        You can edit the tracking url here.
+                      <p className="text-muted-foreground text-sm">
+                        Edit the tracking url and block countries for the selected link.
                       </p>
+
+
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="flex flex-col space-y-4 w-full">
+                  <CardContent className="flex flex-col space-y-4 w-full flex-1 pt-4">
+
+
+
 
                     <div className="flex flex-col space-y-2">
                       <Label>Link URL</Label>
@@ -357,7 +397,7 @@ export default function Home() {
                       />
                     </div>
 
-                    <div className="flex flex-wrap mt-4 gap-2">
+                    <div className="flex mt-4 space-x-2">
 
                       <Button variant="secondary" onClick={async () => { await handleUpdateLink() }}>
                         Update
@@ -365,6 +405,39 @@ export default function Home() {
                       <Button variant="destructive" onClick={async () => { await handleDeleteLink(selectedLink.url); setSelectedLink(null) }}>Delete Link</Button>
 
                     </div>
+
+
+                    <div className="flex flex-col flex-wrap mt-4 gap-2">
+                      <Label> Blocked Countries
+                        <span className="text-muted-foreground text-xs"> (Edit the tracking url to update)</span>
+                      </Label>
+                      <div className="flex flex-wrap gap-4">
+                        <CountrySelector onlyCountries={true} id={'countries'} open={isOpen} onToggle={() => setIsOpen(!isOpen)} onChange={val => setBlockedCountry(val)} selectedValue={COUNTRIES.find(option => option.value === blockedCountry)} />
+                        <Button variant="outline" className="border border-gray-600" onClick={handleBlockedAdition}>
+                          Add to Blocklist
+                        </Button>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {
+                          blockedCountries?.map((countryCode, i) => (
+                            <div key={i} className="flex flex-wrap bg-accent items-center justify-center border border-gray-600">
+                              <p className="text-muted-foreground ml-2">{COUNTRIES.find(option => option.value === countryCode).title}</p>
+
+                              <div onClick={
+                                () => handleBlockedRemoval(COUNTRIES.find(option => option.value === countryCode).value)
+                              } className="cursor-pointer text-muted-foreground hover:text-red-500 font-bold border border-border rounded-[100%] pt-1 pb-1 pl-2 pr-2">
+                                X
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    </div>
+
+
+
+
                   </CardContent>
 
 

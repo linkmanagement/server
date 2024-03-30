@@ -1,4 +1,4 @@
-import { COUNTRIES } from "./countries";
+import { COUNTRIES as COUNTRIES_INCLUDING_ALL } from "./countries";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 
@@ -10,8 +10,10 @@ export default function CountrySelector({
   onToggle,
   onChange,
   selectedValue,
+  onlyCountries = false,
 }) {
   const ref = useRef(null);
+  let COUNTRIES = onlyCountries ? COUNTRIES_INCLUDING_ALL.filter((country) => country.value !== "world") : COUNTRIES_INCLUDING_ALL;
 
   useEffect(() => {
     const mutableRef = ref;

@@ -12,7 +12,7 @@ async function addLink(linkUrl, linkTrackingUrl) {
     if (linkExists) {
         return false;
     }
-    await addDoc(linksCollection, { url: linkUrl, tracking: linkTrackingUrl, timestamp });
+    await addDoc(linksCollection, { url: linkUrl, tracking: linkTrackingUrl, timestamp, blocked: [] });
     return true;
 }
 
@@ -45,6 +45,15 @@ async function updateLinkTrackingUrl(linkUrl, trackingLinkUrl) {
     link.tracking = trackingLinkUrl;
     await updateDoc(doc.ref, link);
 
+}
+
+async function updateBlocked(linkUrl, blocked) {
+    const linksCollection = collection(database, 'links');
+    const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
+    const doc = querySnapshot.docs[0];
+    let link = doc.data();
+    link.blocked = blocked;
+    await updateDoc(doc.ref, link);
 }
 
 // returns the differecne to days ago or hours ago or minutes ago based on the appropiate difference
@@ -96,6 +105,7 @@ export {
     timeDifferenceInText,
     deleteLink,
     updateLinkTrackingUrl,
+    updateBlocked,
     addAnalytics,
     getAnalytics,
     addIpToVpnList,
