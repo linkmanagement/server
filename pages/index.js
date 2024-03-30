@@ -50,14 +50,21 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   // Default this to a country's code to preselect it
   const [country, setCountry] = useState('world');
-
+  
+  function currentMonthAndYear() {
+    const currentDate = new Date();
+    return {
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear(),
+    };
+  }
 
 
   const [links, setLinks] = useState([]);
   const [analytics, setAnalytics] = useState([]);
   const [selectedMonthData, setSelectedMonthData] = useState({
-    month: 9,
-    year: 2023,
+    month: currentMonthAndYear().month,
+    year: currentMonthAndYear().year,
   });
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
