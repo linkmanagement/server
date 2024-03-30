@@ -67,7 +67,7 @@ export function AnalyticsBarChart({ analytics, selectedMonthYear, country }) {
 
     return (
         <div className='w-full h-[100%] justify-center items-center flex flex-col'>
-            <p className='text-sm text-[#10b981]'>
+            <p className='text-sm text-[#10b981] m-2'>
                 {timeText}
             </p>
 
