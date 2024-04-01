@@ -77,6 +77,7 @@ export default function Home() {
 
   const [editInputLink, setEditInputLink] = useState("");
   const [editInputTrackingLink, setEditInputTrackingLink] = useState("");
+  const [editRedirect, setEditRedirect] = useState("");
 
   const [linksChanged, setLinksChanged] = useState(false);
   const [selectedLink, setSelectedLink] = useState(null);
@@ -175,7 +176,7 @@ export default function Home() {
   }
 
   async function handleUpdateLink() {
-    await updateLinkTrackingUrl(editInputLink, removeHttpOrHttpsAndEndSlash(editInputTrackingLink));
+    await updateLinkTrackingUrl(editInputLink, removeHttpOrHttpsAndEndSlash(editInputTrackingLink), removeHttpOrHttpsAndEndSlash(editRedirect));
     toast({
       title: "Link updated",
       description: `Link ${editInputLink} updated successfully`,
@@ -395,6 +396,21 @@ export default function Home() {
                         value={editInputTrackingLink}
                         onChange={(e) => setEditInputTrackingLink(e.target.value)}
                       />
+
+                    </div>
+
+                    <div className="flex flex-col space-y-2 mt-4">
+
+                      <Label>Redirect URL
+                        <span className="text-muted-foreground text-xs"> (Edit the redirect url to update)</span>
+
+                      </Label>
+                      <Input
+                        className="w-full"
+                        value={editRedirect}
+                        onChange={(e) => setEditRedirect(e.target.value)}
+                      />
+
                     </div>
 
                     <div className="flex space-x-2 bg-background p-4 border border-gray-600" >
