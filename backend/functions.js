@@ -19,7 +19,10 @@ async function addLink(linkUrl, linkTrackingUrl) {
 async function getLinks() {
     const linksCollection = collection(database, 'links');
     const linksSnapshot = await getDocs(linksCollection);
-    return linksSnapshot.docs.map(doc => doc.data());
+    let data = linksSnapshot.docs.map(doc => doc.data());
+    // sort the links by timestamp
+    data.sort((a, b) => b.timestamp - a.timestamp);
+    return data;
 }
 
 
