@@ -2,7 +2,11 @@ import { getLink } from "@/backend/functions";
 
 export default async function handler(req, res) {
 
-  if(req.method === 'POST') {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).send('ok');
+  }
+
+  else if(req.method === 'POST') {
     // Process a POST request
     let data = req.body;
     let url = data.url;
