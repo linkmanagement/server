@@ -158,6 +158,7 @@ export default function Home() {
       setBlockedCountries(selectedLink.blocked)
       setEditInputLink(selectedLink.url);
       setEditInputTrackingLink(selectedLink.tracking);
+      setEditRedirect(selectedLink.redirect_to);
     }
     else {
       setCountry('world');
