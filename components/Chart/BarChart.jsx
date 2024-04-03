@@ -4,11 +4,11 @@ import { COUNTRIES } from '../CountrySelector/countries';
 
 
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, month }) => {
     if (active && payload && payload.length) {
         return (
             <div className="flex flex-col max-w-[200px] break-words bg-card p-4 border border-[#10b981] rounded-md">
-                <p className="text-muted-foreground">{`${label} march`}</p>
+                <p className="text-muted-foreground">{`${label} ${month}`}</p>
                 <p>
                     <span className="text-muted-foreground">Clicks: </span>
                     <span className="text-[#10b981]">{payload[0].value}</span>
@@ -84,7 +84,7 @@ export function AnalyticsBarChart({ analytics, selectedMonthYear, country }) {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip month={monthName} />} />
                     <Legend />
                     <Bar dataKey="clicks" barSize={20} fill="rgb(16 185 129)" />
                 </BarChart>
