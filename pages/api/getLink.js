@@ -19,7 +19,6 @@ export default async function handler(req, res) {
     else {
       let link = await getLink(url);
       res.status(200).json({ message: 'Link found', link: link});
-      
     }
 
 
