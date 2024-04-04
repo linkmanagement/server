@@ -38,11 +38,11 @@ export default async function handler(req, res) {
     }
 
     const vpnData = await isVpnResponse.json();
-    if (vpnData.is_vpn) {
+    if (vpnData.is_vpn || vpnData.is_proxy) {
       await addIpToVpnList(ip);
     }
 
-    return res.status(200).json({ ip, ...data, is_vpn: vpnData.is_vpn });
+    return res.status(200).json({ ip, ...data, is_vpn: (vpnData.is_vpn || vpnData.is_proxy)});
   } catch (error) {
     return res.status(500).json({ ip: null, country: null, countryCode: null, city: null, error: "geo" });
   }
