@@ -12,7 +12,7 @@ async function addLink(linkUrl, linkTrackingUrl) {
     if (linkExists) {
         return false;
     }
-    await addDoc(linksCollection, { url: linkUrl, tracking: linkTrackingUrl, timestamp, blocked: [], redirect_to: "" });
+    await addDoc(linksCollection, { url: linkUrl, tracking: linkTrackingUrl, timestamp, blocked: [], redirect_to: "", vpnBlocked: true });
     return true;
 }
 
@@ -40,13 +40,14 @@ async function getLink(linkUrl) {
     return doc.data();
 }
 
-async function updateLinkTrackingUrl(linkUrl, trackingLinkUrl, redirectUrl) {
+async function updateLinkTrackingUrl(linkUrl, trackingLinkUrl, redirectUrl, vpnBlocked) {
     const linksCollection = collection(database, 'links');
     const querySnapshot = await getDocs(query(linksCollection, where('url', '==', linkUrl)));
     const doc = querySnapshot.docs[0];
     let link = doc.data();
     link.tracking = trackingLinkUrl;
-    link.redirect_to = redirectUrl
+    link.redirect_to = redirectUrl;
+    link.vpnBlocked = vpnBlocked;
     await updateDoc(doc.ref, link);
 
 }
@@ -114,5 +115,5 @@ export {
     getAnalytics,
     addIpToVpnList,
     isIpInVpnList,
-    getLink
+    getLink,
 }

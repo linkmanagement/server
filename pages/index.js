@@ -4,6 +4,10 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast, useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+
+import { Switch } from "@/components/ui/switch"
+
+
 import {
   Card,
   CardContent,
@@ -44,6 +48,7 @@ import CountrySelector from "@/components/CountrySelector/CountrySelector"
 
 
 
+
 export default function Home() {
 
 
@@ -78,6 +83,7 @@ export default function Home() {
   const [editInputLink, setEditInputLink] = useState("");
   const [editInputTrackingLink, setEditInputTrackingLink] = useState("");
   const [editRedirect, setEditRedirect] = useState("");
+  const [editVpnBlocked, setEditVpnBlocked] = useState(false);
 
   const [linksChanged, setLinksChanged] = useState(false);
   const [selectedLink, setSelectedLink] = useState(null);
@@ -90,6 +96,14 @@ export default function Home() {
     async function fetchLinks() {
       const links = await getLinks();
       setLinks(links);
+
+      for(let i = 0; i < links.length; i++) {
+        const link = links[i];
+        if(link.url === selectedLink?.url) {
+          setSelectedLink(link);
+          break;
+        }
+      }
     }
     fetchLinks();
   }, [linksChanged]);
@@ -159,6 +173,7 @@ export default function Home() {
       setEditInputLink(selectedLink.url);
       setEditInputTrackingLink(selectedLink.tracking);
       setEditRedirect(selectedLink.redirect_to);
+      setEditVpnBlocked(selectedLink.vpnBlocked);
     }
     else {
       setCountry('world');
@@ -177,7 +192,7 @@ export default function Home() {
   }
 
   async function handleUpdateLink() {
-    await updateLinkTrackingUrl(editInputLink, removeHttpOrHttpsAndEndSlash(editInputTrackingLink), removeHttpOrHttpsAndEndSlash(editRedirect));
+    await updateLinkTrackingUrl(editInputLink, removeHttpOrHttpsAndEndSlash(editInputTrackingLink), removeHttpOrHttpsAndEndSlash(editRedirect), editVpnBlocked);
     toast({
       title: "Link updated",
       description: `Link ${editInputLink} updated successfully`,
@@ -349,7 +364,19 @@ export default function Home() {
 
         {
           selectedLink &&
-          <Tabs defaultValue="analytics" className="w-full mt-2 flex flex-col flex-1">
+          <Tabs defaultValue="analytics" className="w-full mt-2 flex flex-col flex-1" onValueChange={(v) => {
+            if (v === 'edit') {
+              setEditInputLink(selectedLink.url);
+              setEditInputTrackingLink(selectedLink.tracking);
+              setEditRedirect(selectedLink.redirect_to);
+              setEditVpnBlocked(selectedLink.vpnBlocked);
+              setBlockedCountries(selectedLink.blocked);
+
+
+            }
+          }
+
+          }>
             <TabsList className="w-[fit-content] md:m-auto mb-2 border border-gray-600">
               <TabsTrigger value="analytics">View Analytics</TabsTrigger>
               <TabsTrigger value="edit">Edit Link</TabsTrigger>
@@ -413,6 +440,12 @@ export default function Home() {
                       />
 
                     </div>
+
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="airplane-mode">Block all VPN / proxy traffic </Label>
+                      <Switch id="airplane-mode" checked={editVpnBlocked} onCheckedChange={setEditVpnBlocked} />
+                    </div>
+
 
                     <div className="flex space-x-2 bg-background p-4 border border-gray-600" >
 
