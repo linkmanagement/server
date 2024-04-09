@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ip, ...data, is_vpn, early_exit: true });
     }
 
-    const isVpnResponse = await fetch(`https://api.ipapi.is/?q=${ip}&key=46fc5d287960a8b2`);
+    const isVpnResponse = await fetch(`https://api.ipapi.is/?q=${ip}&key=bd6e428945d78a17`);
     if (!isVpnResponse.ok) {
       return res.status(500).json({ ip, ...data, is_vpn: false, error: "vpn" });
     }
